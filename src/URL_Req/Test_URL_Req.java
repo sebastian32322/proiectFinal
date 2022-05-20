@@ -3,7 +3,9 @@ package URL_Req;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL; 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -60,13 +62,13 @@ public class Test_URL_Req {
 		     	}
 		 
 		     
-		     String goodnames[] = new String[500];
+		     String[] goodnames = new String[500];
 		     String goodlat[] = new String[500];
 		     String goodlon[] = new String[500];
 		     
 		     int lenghtFirstRequest = 0;
 		     for(int i = 0; i < parts.length; ++i) {
-		    	 if( names[i].charAt(0) == '2' && names[i].length() == 4)
+		    	 if( names[i].charAt(0) == '2' && names[i].length() == 4 && names[i].charAt(1) == '2')
 		    	 {
 		    		 goodnames[lenghtFirstRequest] = names[i];
 		    		 goodlat[lenghtFirstRequest] = lat[i];
@@ -88,6 +90,8 @@ public class Test_URL_Req {
 		    	 }
 		     }
 		     
+		     
+		     //a doua interogare a bazei de date
 		     System.out.println("--------------------------------------------------");
 		     Thread.sleep(15000);
 		     
@@ -147,7 +151,7 @@ public class Test_URL_Req {
 		     
 		     int lenghtSecondRequest = 0;
 		     for(int i = 0; i < parts1.length; ++i) {
-		    	 if( names1[i].charAt(0) == '2' && names1[i].length() == 4)
+		    	 if( names1[i].charAt(0) == '2' && names1[i].length() == 4 && names1[i].charAt(1) == '2')
 		    	 {
 		    		 goodnames1[lenghtSecondRequest] = names1[i];
 		    		 goodlat1[lenghtSecondRequest] = lat1[i];
@@ -167,10 +171,12 @@ public class Test_URL_Req {
 		    	 }
 		     }
 		    
-		     //coordonatele statiilor
 		     
-		     double tgCucu_lat = 47.164221;
-		     double tgCucu_lon = 27.590581;
+		     
+		     
+		     
+  //coordonatele statiilor
+		     
 		     
 		     double poduRos_lat =  47.151216;
 		     double poduRos_lon = 27.587507;
@@ -189,8 +195,7 @@ public class Test_URL_Req {
 		     
 		     
 		     
-		     tgCucu_lat = Math.toRadians(tgCucu_lat);
-		     tgCucu_lon = Math.toRadians(tgCucu_lon);
+		
 		     
 		     poduRos_lat = Math.toRadians(poduRos_lat);
 		     poduRos_lon = Math.toRadians(poduRos_lon);
@@ -218,55 +223,11 @@ public class Test_URL_Req {
 		     double distanceGara[] = new double[50];
 		     
 		     
-		     double r = 6371;
-		     //TgCucu 
-		     for (int i = 0; i < lenghtFirstRequest; i++) {
-		    	 double dlon = tgCucu_lat - Math.toRadians(Double.parseDouble(goodlat[i]));
-		         double dlat = tgCucu_lon - Math.toRadians(Double.parseDouble(goodlon[i]));
+					     
 		     
-		         double x = Math.pow(Math.sin(dlat / 2), 2)
-		                  + Math.cos(Double.parseDouble( goodlon[i] ) ) * Math.cos(tgCucu_lat)
-		                  * Math.pow(Math.sin(dlon / 2),2);
-		         
-		         double y = 2 * Math.asin(Math.sqrt(x));
-		         
-		         distanceTgCucu[i] = y * r;
-		     }
+		     Map<String, Double> minTgCucu = minTgcucuDistance(lenghtFirstRequest, goodlat, goodlon, goodnames);
+		    System.out.println(minTgCucu);
 		     
-     
-		     double minTgCucu = distanceTgCucu[0];
-		     for (int i = 1; i < distanceTgCucu.length; i++ ) {
-		    	 if (minTgCucu > distanceTgCucu[i] && distanceTgCucu[i] != 0 ) {
-		    		 minTgCucu = distanceTgCucu[i];
-		    	 }
-		     }
-		     
-		     System.out.println(minTgCucu);
-		     
-/*		     double a = 27.57239;  //lon
-		     double b = 47.174618; // lat
-		     double c = 27.590581; //tg cucu lon
-		     double d = 47.164221; //tg cucu lat
-		      a = Math.toRadians(a);
-		      c = Math.toRadians(c);
-		      b = Math.toRadians(b);
-		      d = Math.toRadians(d);
-		     
-		      
-		         double x = Math.pow(Math.sin(dlat / 2), 2)
-		                  + Math.cos(b) * Math.cos(d)
-		                  * Math.pow(Math.sin(dlon / 2),2);
-		             
-		         double y = 2 * Math.asin(Math.sqrt(x));
-
-		         // Radius of earth in kilometers.
-		         
-		        
-
-		         // calculate the result
-		         System.out.println(y * r);
-*/		     
-
 		  } catch(Exception e){
 		  System.out.println(e);
 		  }
@@ -274,9 +235,68 @@ public class Test_URL_Req {
 
 	}
 	
-	
-	static void Gara() {
+	//functie calcul distanta minima Tg cucu pentru tramvaiele care merg 
+	public static Map<String, Double> minTgcucuDistance(int lenghtFirstRequest, String[] goodlat, String goodlon[], String goodnames[] ) {
+		 
+		Map<String, Double> coordonate = new HashMap<String, Double>();
 		
+		
+		double tgCucu_lat = 47.164221;
+	    double tgCucu_lon = 27.590581;
+	     
+	     tgCucu_lat = Math.toRadians(tgCucu_lat);
+	     tgCucu_lon = Math.toRadians(tgCucu_lon);
+	     
+	     double distanceTgCucu[] = new double[50];
+	     double r = 6371;
+	     
+	     
+	     
+	     for (int i = 0; i < lenghtFirstRequest; i++) {
+	    	 double dlat = tgCucu_lat - Math.toRadians(Double.parseDouble(goodlat[i]));
+	         double dlon = tgCucu_lon - Math.toRadians(Double.parseDouble(goodlon[i]));
+	     
+	         double x = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(Double.parseDouble( goodlat[i] ) ) * Math.cos(tgCucu_lat) * Math.pow(Math.sin(dlon / 2),2);
+	         
+	         double y = 2 * Math.asin(Math.sqrt(x));
+	         
+	         distanceTgCucu[i] = y * r;
+	     }
+	     
+	     
+	    double minTgCucu = 0;
+	    int j = 0;
+	    for (int i = 0; i < distanceTgCucu.length; i++) {
+	    	if (distanceTgCucu[i] != 0 && Double.isNaN(distanceTgCucu[i]) == false ) {
+	    		minTgCucu = distanceTgCucu[i]; 
+	    		j = i;
+	    		break;
+	    	}
+	    }
+	     
+	     minTgCucu = distanceTgCucu[j];
+	     String minTgCucuCod = "";
+	     
+	     for (int i = 0; i < distanceTgCucu.length; i++) {
+	    	 System.out.println(distanceTgCucu[i] );
+	     }
+	     
+	     
+	     for (int i = j; i < distanceTgCucu.length; i++ ) {
+	    	 
+	    	 if (minTgCucu > distanceTgCucu[i] && distanceTgCucu[i] != 0  ) {
+	    		 minTgCucu = distanceTgCucu[i];
+	    		 minTgCucuCod = goodnames[i];
+	    		 
+	    	 }
+	     }
+	     
+	     coordonate.put(minTgCucuCod, minTgCucu);
+	     return coordonate;
 	}
+	
+	
+	
+	
 
 }
