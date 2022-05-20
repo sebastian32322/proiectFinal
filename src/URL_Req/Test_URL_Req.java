@@ -226,7 +226,7 @@ public class Test_URL_Req {
 					     
 		     
 		     Map<String, Double> minTgCucu = minTgcucuDistance(lenghtFirstRequest, goodlat, goodlon, goodnames);
-		    System.out.println(minTgCucu);
+		     System.out.println(minTgCucu);
 		     
 		  } catch(Exception e){
 		  System.out.println(e);
