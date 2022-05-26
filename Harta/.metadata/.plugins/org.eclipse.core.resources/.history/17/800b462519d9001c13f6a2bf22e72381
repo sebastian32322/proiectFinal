@@ -1,0 +1,374 @@
+package io.github.makbn.jlmap;
+
+import io.github.makbn.jlmap.model.JLLatLng;
+
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Insets;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+
+
+
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+
+
+import java.awt.Font;
+
+
+
+
+
+
+
+
+
+import javax.swing.JTextPane;
+import javax.swing.border.Border;
+import javax.swing.JEditorPane;
+import javax.swing.JTextArea;
+
+
+
+
+
+import javax.xml.stream.events.StartDocument;
+
+import io.github.makbn.jlmap.listener.OnJLMapViewListener;
+import io.github.makbn.jlmap.listener.OnJLObjectActionListener;
+import io.github.makbn.jlmap.model.*;
+import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Color;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
+
+
+
+
+/*
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax. swing. UnsupportedLookAndFeelException;
+*/
+
+//clasa rotunjire buton
+class RoundedBorder implements Border {
+
+    private int radius;
+
+
+    RoundedBorder(int radius) {
+        this.radius = radius;
+    }
+
+
+    public Insets getBorderInsets(Component c) {
+        return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
+    }
+
+
+    public boolean isBorderOpaque() {
+        return false;
+    }
+
+
+    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        g.drawRoundRect(x, y, width-1, height-1, radius, radius);
+    }
+}
+//////
+
+
+public class PESApr{
+
+	private JFrame frmPesa;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					PESApr window = new PESApr();
+					window.frmPesa.setVisible(true);
+					Leaflet.launch(args);
+					//UIManager.setLookAndFeel("com.jtattoo.plaf.aluminium.AluminiumLookAndFeel");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public PESApr(){
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize(){
+		//FRAME
+		frmPesa = new JFrame();
+		frmPesa.setTitle("PESA 2022");
+		frmPesa.setBounds(100, 100, 450, 600);
+		frmPesa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		/////
+		
+		// ZONA DE TEXT
+		JTextArea textArea = new JTextArea();
+		textArea.setLineWrap(true);
+		textArea.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		textArea.setEditable(false);
+		textArea.setBounds(61, 347, 319, 83);
+		frmPesa.getContentPane().add(textArea);
+		textArea.setVisible(false);
+		////////
+		
+		
+		
+		
+		//Butoane statii
+		JButton btnTgCucu = new JButton("");
+		btnTgCucu.setBorderPainted(false);
+		btnTgCucu.setFocusPainted(false);
+		btnTgCucu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea.setText("Tramvaiul vine in statie (/pleaca)");
+               /* map.getUiLayer()
+                .addMarker(JLLatLng.builder()
+                		.lat( 47.164221)
+                		.lng(27.590581 )
+                        .build(), "Tg Cucu", true)
+                .setOnActionListener(getListener());
+                */
+                
+			
+				
+			}
+		});
+		btnTgCucu.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnTgCucu.setBounds(121, 13, 188, 51);
+		btnTgCucu.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\tgCucu.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+		btnTgCucu.setContentAreaFilled(false);
+		frmPesa.getContentPane().add(btnTgCucu);
+		btnTgCucu.setVisible(false);
+		
+		JButton btnPoduRos = new JButton("Podu Ros");
+		btnPoduRos.setBorderPainted(false);
+		btnPoduRos.setFocusPainted(false);
+		btnPoduRos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea.setText("Tramvaiul vine in statie (/pleaca)");
+			}
+		});
+		btnPoduRos.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnPoduRos.setBounds(125, 69, 200, 51);
+		btnPoduRos.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\poduRos.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+		btnPoduRos.setContentAreaFilled(false);
+		frmPesa.getContentPane().add(btnPoduRos);
+		btnPoduRos.setVisible(false);
+		
+		JButton btnCopou = new JButton("Copou");
+		btnCopou.setFocusPainted(false);
+		btnCopou.setBorderPainted(false);
+		btnCopou.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea.setText("Tramvaiul vine in statie (/pleaca)");
+			}
+		});
+		btnCopou.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnCopou.setBounds(125, 121, 200, 51);
+		btnCopou.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\copou.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+		btnCopou.setContentAreaFilled(false);
+		frmPesa.getContentPane().add(btnCopou);
+		btnCopou.setVisible(false);
+		
+		JButton btnPalas = new JButton("Palas");
+		btnPalas.setBorderPainted(false);
+		btnPalas.setFocusPainted(false);
+		btnPalas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea.setText("Tramvaiul vine in statie (/pleaca)");
+			}
+		});
+		btnPalas.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnPalas.setBounds(125, 176, 200, 51);
+		btnPalas.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\palas.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+		btnPalas.setContentAreaFilled(false);
+		frmPesa.getContentPane().add(btnPalas);
+		btnPalas.setVisible(false);
+		
+		JButton btnPiataUnirii = new JButton("Piata Unirii");
+		btnPiataUnirii.setBorderPainted(false);
+		btnPiataUnirii.setFocusPainted(false);
+		btnPiataUnirii.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea.setText("Tramvaiul vine in statie (/pleaca)");
+			}
+		});
+		btnPiataUnirii.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnPiataUnirii.setBounds(125, 227, 200, 51);
+		btnPiataUnirii.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\piataUnirii.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+		btnPiataUnirii.setContentAreaFilled(false);
+		frmPesa.getContentPane().add(btnPiataUnirii);
+		btnPiataUnirii.setVisible(false);
+		
+		JButton btnGara = new JButton("Gara");
+		btnGara.setFocusPainted(false);
+		btnGara.setBorderPainted(false);
+		btnGara.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea.setText("Tramvaiul vine in statie (/pleaca)");
+			}
+		});
+		btnGara.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnGara.setBounds(124, 277, 200, 51);
+		btnGara.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\gara.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+		btnGara.setContentAreaFilled(false);
+		frmPesa.getContentPane().add(btnGara);
+		btnGara.setVisible(false);
+		/////
+		
+		
+		//Buton harta
+		JButton btnHarta = new JButton("HARTA");
+		btnHarta.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+					}
+		});
+		btnHarta.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnHarta.setBounds(106, 121, 222, 78);
+		frmPesa.getContentPane().add(btnHarta);
+		//Buton Zone de interes
+		JButton btnZoneDeInteres = new JButton("ZONE DE INTERES");
+		
+		
+		//Buton BACK
+		JButton btnBack = new JButton("");
+		btnBack.setFocusPainted(false);
+		btnBack.setVisible(false);
+		btnBack.setBorderPainted(false);
+		btnBack.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\btnBack.png")).getImage()).getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnHarta.setVisible(true);
+				btnZoneDeInteres.setVisible(true);
+				btnTgCucu.setVisible(false);
+				btnPoduRos.setVisible(false);
+				btnCopou.setVisible(false);
+				btnPalas.setVisible(false);
+				btnPiataUnirii.setVisible(false);
+				btnGara.setVisible(false);
+				btnBack.setVisible(false);
+				
+				textArea.setVisible(false);
+				textArea.setText("Verifica PESA");
+			}
+		});
+		btnBack.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnBack.setBounds(356, 443, 64, 68);
+		frmPesa.getContentPane().add(btnBack);
+		btnBack.setContentAreaFilled(false);
+		//////
+		
+		//Actiune buton ZONE DE INTERES
+		btnZoneDeInteres.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnHarta.setVisible(false);
+				btnZoneDeInteres.setVisible(false);
+				btnTgCucu.setVisible(true);
+				btnPoduRos.setVisible(true);
+				btnCopou.setVisible(true);
+				btnPalas.setVisible(true);
+				btnPiataUnirii.setVisible(true);
+				btnGara.setVisible(true);
+				btnBack.setVisible(true);
+				
+				textArea.setVisible(true);
+			}
+		});
+		btnZoneDeInteres.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+		btnZoneDeInteres.setBounds(106, 263, 222, 78);
+		frmPesa.getContentPane().add(btnZoneDeInteres);
+		//////
+
+		
+		
+		//SETARE background FRAME
+		frmPesa.getContentPane().setLayout(null);
+		JLabel background;
+		ImageIcon backgroundFRAME = new ImageIcon ("D:\\PipPESA2022\\pessa.jpg");
+		background = new JLabel("", backgroundFRAME, JLabel.CENTER);
+		background.setBounds(0, 0, 432, 521);
+		frmPesa.getContentPane().add(background);	
+		
+
+
+		
+		
+
+		//Meniu BAR + Iteme
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBorderPainted(false);
+		frmPesa.setJMenuBar(menuBar);
+		
+		JMenu menu = new JMenu("");
+		menu.setIcon(new ImageIcon(((new ImageIcon("D:/PipPESA2022/menubar.png")).getImage()).getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)));
+		menuBar.add(menu);
+		
+		JMenuItem mntmFaq = new JMenuItem("FAQ");
+		menu.add(mntmFaq);
+		
+		JMenuItem mntmOpenSource = new JMenuItem("Open source");
+		menu.add(mntmOpenSource);
+		
+		JMenuItem mntmHowItWorks = new JMenuItem("How it works");
+		menu.add(mntmHowItWorks);
+		
+		JMenu mnContact = new JMenu("Contact");
+		menu.add(mnContact);
+		
+		JMenuItem mntmDenisleonardmocanustudenttuiasiro = new JMenuItem("denis-leonard.mocanu@student.tuiasi.ro");
+		mnContact.add(mntmDenisleonardmocanustudenttuiasiro);
+		
+		JMenuItem mntmRazvansebastianbodescustudenttuiasiro = new JMenuItem("razvan-sebastian.bodescu@student.tuiasi.ro");
+		mnContact.add(mntmRazvansebastianbodescustudenttuiasiro);
+		
+		JMenuItem mntmPaulgheorghebreabanstudenttuiasiro = new JMenuItem("paul-gheorghe.breaban@student.tuiasi.ro");
+		mnContact.add(mntmPaulgheorghebreabanstudenttuiasiro);
+		
+		JMenuItem mntmAlexandrugabrielfilipstudenttuiasiro = new JMenuItem("alexandru-gabriel.filip@student.tuiasi.ro");
+		mnContact.add(mntmAlexandrugabrielfilipstudenttuiasiro);
+		
+		JMenuItem mntmAboutUs = new JMenuItem("About us");
+		menu.add(mntmAboutUs);
+		
+		JMenuItem mntmUpdate = new JMenuItem("Update");
+		menu.add(mntmUpdate);
+		
+		
+
+	}
+}

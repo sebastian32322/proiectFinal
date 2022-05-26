@@ -1,0 +1,1144 @@
+package io.github.makbn.jlmap;
+
+import java.awt.ComponentOrientation;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JTextArea;
+import javax.swing.border.LineBorder;
+
+import io.github.makbn.jlmap.listener.OnJLMapViewListener;
+import io.github.makbn.jlmap.listener.OnJLObjectActionListener;
+import io.github.makbn.jlmap.model.*;
+import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Color;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
+
+
+
+
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.json.JSONObject;
+
+
+
+class Test_URL_Req {
+
+	public static Map<String,Double> minTgCucu = new HashMap<String,Double>();
+	public static Map<String,Double> minPRos = new HashMap<String,Double>();
+	public static Map<String,Double> minCopou = new HashMap<String,Double>();
+	public static Map<String,Double> minPalas = new HashMap<String,Double>();
+	public static Map<String,Double> minPUnirii = new HashMap<String,Double>();
+	public static Map<String,Double> minGara = new HashMap<String,Double>();
+	
+	
+	
+    public static String[] goodnames = new String[500];
+    public static String[] goodlat = new String[500];
+    public static String[] goodlon = new String[500];
+	
+	
+	
+	public static void callMe() throws Exception{
+		
+		
+		String url = "https://gps.sctpiasi.ro/json";
+		 URL obj = new URL(url);
+	     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+	     
+	     int responseCode = con.getResponseCode();
+	     System.out.println("\nSending 'GET' request to URL : " + url);
+	     System.out.println("Response Code : " + responseCode);
+	     
+	     BufferedReader in = new BufferedReader(
+	             new InputStreamReader(con.getInputStream()));
+	     String inputLine;
+	     StringBuffer response = new StringBuffer();
+	     while ((inputLine = in.readLine()) != null) {
+	     	response.append(inputLine);
+	     }
+	     in.close();
+	   
+	     
+	     
+	     
+	     String myresponse = response.toString().substring(1, response.toString().length() - 1);
+	     System.out.println(myresponse);
+
+	     
+	     
+	     
+	     String parts[] = myresponse.split("}");
+	     String names[] = new String[500];
+	     String lat[] = new String[500];
+	     String lon[] = new String[500];
+      	    
+	     
+	     for(int i = 1; i < parts.length; ++i) {
+	        parts[i] = parts[i].substring(1);  
+	        }
+	    
+	     for(int i = 0; i < parts.length; ++i) {
+	        	
+	     
+       	parts[i] = parts[i] + "}";  //Metoda Alex
+      	    JSONObject firstRequest = new JSONObject(parts[i].toString());
+      	    	
+      	    names[i] = firstRequest.getString("vehicleName");
+      	    lat[i] = firstRequest.getString("vehicleLat");
+      	    lon[i] = firstRequest.getString("vehicleLong");
+ 
+	     	}
+	 
+	     
+
+	     
+	     int lenghtFirstRequest = 0;
+	     for(int i = 0; i < parts.length; ++i) {
+	    	 if( names[i].charAt(0) == '2' && names[i].length() == 4 && names[i].charAt(1) == '2')
+	    	 {
+	    		 goodnames[lenghtFirstRequest] = names[i];
+	    		 goodlat[lenghtFirstRequest] = lat[i];
+	    		 goodlon[lenghtFirstRequest] = lon[i];
+	    		 lenghtFirstRequest++;
+	    	 }
+	    		 
+	     }
+	     
+	     
+	     
+	     
+	     for(int i = 0; i < goodnames.length; ++i) {
+	    	 if( goodnames[i] != null)
+	    	 {
+	    		 	System.out.println(goodnames[i]);
+	    		 	System.out.println(goodlat[i]);
+	    		 	System.out.println(goodlon[i]);
+	    	 }
+	     }
+	     
+	     
+	     //a doua interogare a bazei de date
+	     System.out.println("--------------------------------------------------");
+	     Thread.sleep(20000);
+	     
+	     
+	     String url1 = "https://gps.sctpiasi.ro/json";
+		 URL obj1 = new URL(url1);
+	     HttpURLConnection con1 = (HttpURLConnection) obj1.openConnection();
+	     
+	     int responseCode1 = con1.getResponseCode();
+	     System.out.println("\nSending 'GET' request to URL : " + url1);
+	     System.out.println("Response Code : " + responseCode1);
+	     
+	     BufferedReader in1 = new BufferedReader(
+	             new InputStreamReader(con1.getInputStream()));
+	     String inputLine1;
+	     StringBuffer response1 = new StringBuffer();
+	     while ((inputLine1 = in1.readLine()) != null) {
+	     	response1.append(inputLine1);
+	     }
+	     in1.close();
+	   
+	     
+	     
+	     
+	     String myresponse1 = response1.toString().substring(1, response1.toString().length() - 1);
+	     System.out.println(myresponse1);
+
+	     
+	     
+	     
+	     String parts1[] = myresponse1.split("}");
+	     String names1[] = new String[500];
+	     String lat1[] = new String[500];
+	     String lon1[] = new String[500];
+      	    
+	     
+	     for(int i = 1; i < parts1.length; ++i) {
+	        parts1[i] = parts1[i].substring(1);  
+	        }
+	    
+	     for(int i = 0; i < parts1.length; ++i) {
+	        	
+	     
+       	parts1[i] = parts1[i] + "}";  //Metoda Alex
+      	    JSONObject secondRequest = new JSONObject(parts1[i].toString());
+      	    	
+      	    names1[i] = secondRequest.getString("vehicleName");
+      	    lat1[i] = secondRequest.getString("vehicleLat");
+      	    lon1[i] = secondRequest.getString("vehicleLong");
+ 
+	     	}
+	 
+	     
+	     String goodnames1[] = new String[500];
+	     String goodlat1[] = new String[500];
+	     String goodlon1[] = new String[500];
+	     
+	     int lenghtSecondRequest = 0;
+	     for(int i = 0; i < parts1.length; ++i) {
+	    	 if( names1[i].charAt(0) == '2' && names1[i].length() == 4 && names1[i].charAt(1) == '2')
+	    	 {
+	    		 goodnames1[lenghtSecondRequest] = names1[i];
+	    		 goodlat1[lenghtSecondRequest] = lat1[i];
+	    		 goodlon1[lenghtSecondRequest] = lon1[i];
+	    		 lenghtSecondRequest++;
+	    	 }
+	    		 
+	    	 
+	     }
+	     
+	     for(int i = 0; i < goodnames1.length; ++i) {
+	    	 if( goodnames1[i] != null)
+	    	 {
+	    		 	System.out.println(goodnames1[i]);
+	    		 	System.out.println(goodlat1[i]);
+	    		 	System.out.println(goodlon1[i]);
+	    	 }
+	     }
+
+	     
+
+
+	     
+	     
+				     
+	     
+	     minTgCucu = minTgcucuDistance(lenghtFirstRequest, goodlat, goodlon, goodnames,goodlat1,goodlon1,goodnames1);
+	     System.out.println(minTgCucu);
+	     
+	     minPRos = minPRosDistance(lenghtFirstRequest, goodlat, goodlon, goodnames,goodlat1,goodlon1,goodnames1);
+	     System.out.println(minPRos);
+	     
+	     minCopou = minCopouDistance(lenghtFirstRequest, goodlat, goodlon, goodnames,goodlat1,goodlon1,goodnames1);
+	     System.out.println(minCopou);
+		
+	     minPalas = minPalasDistance(lenghtFirstRequest, goodlat, goodlon, goodnames,goodlat1,goodlon1,goodnames1);
+	     System.out.println(minPalas);
+	     
+	     minPUnirii = minPUniriiDistance(lenghtFirstRequest, goodlat, goodlon, goodnames,goodlat1,goodlon1,goodnames1);
+	     System.out.println(minPUnirii);
+	     
+	     minGara = minGaraDistance(lenghtFirstRequest, goodlat, goodlon, goodnames,goodlat1,goodlon1,goodnames1);
+	     System.out.println(minGara);
+	}
+	
+	
+	
+	
+	//functie calcul distanta minima P Ros pentru tramvaiele care merg
+	public static Map<String, Double> minPRosDistance(int lenghtFirstRequest, String[] goodlat, String goodlon[], String goodnames[],String[] goodlat1, String[] goodlon1, String[] goodnames1 ) {
+
+		Map<String, Double> coordonate = new HashMap<String, Double>();
+
+
+		double poduRos_lat =  47.151216;
+	    double poduRos_lon = 27.587507;
+	   
+	   
+	    double distancePRos1[] = new double[16];
+	    double distancePRos2[] = new double[16];
+	   
+	   
+	   
+	   
+	    for (int i = 0; i < lenghtFirstRequest; i++) {
+	    	double theta = Double.parseDouble(goodlon[i]) - poduRos_lon;  
+	    	double dist = Math.sin(poduRos_lat * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(poduRos_lat* Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+	        dist = Math.acos(dist);
+	       
+	        dist = dist * 180.0 / Math.PI;
+	        dist = dist * 60 * 1.1515 * 1.609344;
+	       
+	        distancePRos1[i] = dist;
+	       
+	    }
+	   
+	   
+	   
+	   
+	    for (int i = 0; i < lenghtFirstRequest; i++) {
+	    	double theta =  Double.parseDouble(goodlon1[i]) - Double.parseDouble(goodlon[i]) ;  
+	    	double dist = Math.sin(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+	        dist = Math.acos(dist);
+	        dist = dist * 180.0 / Math.PI;
+	        dist = dist * 60 * 1.1515 * 1.609344;
+	       
+	        distancePRos2[i] = dist;
+	       
+	    }
+	   
+	    String minPRosCod = "";
+	    double minPRos = 0;
+	    double sortDistance []= new double[16];
+	   
+	    for ( int i = 0; i < lenghtFirstRequest; i++) {
+	    	sortDistance[i] = distancePRos1[i] - distancePRos2[i];
+	    }
+	   
+	   
+	    Arrays.sort(sortDistance);
+	   
+	   
+	    for ( int i = 0; i < lenghtFirstRequest; i++) {
+	    	if (sortDistance[i] > 0) {
+	    		minPRos = sortDistance[i];
+	    		break;
+	    	}
+	    }
+	   
+	    for ( int i = 0; i < lenghtFirstRequest; i++) {
+	    	if (distancePRos1[i] - distancePRos2[i] == sortDistance[0] ) {
+	    		minPRosCod = goodnames[i];
+	    	}
+	    }
+	   
+	   
+	    coordonate.put(minPRosCod, minPRos);
+	   
+	   
+	    return coordonate;
+	}
+	
+	//functie calcul distanta minima Tg. Cucu pentru tramvaiele care merg
+		public static Map<String, Double> minTgcucuDistance(int lenghtFirstRequest, String[] goodlat, String goodlon[], String goodnames[],String[] goodlat1, String[] goodlon1, String[] goodnames1 ) {
+
+			Map<String, Double> coordonate = new HashMap<String, Double>();
+
+
+			double tgCucu_lat = 47.164221;
+			double tgCucu_lon = 27.590581;
+		   
+		   
+		    double distanceTgCucu1[] = new double[16];
+		    double distanceTgCucu2[] = new double[16];
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    double theta = Double.parseDouble(goodlon[i]) - tgCucu_lon;  
+		    double dist = Math.sin(tgCucu_lat * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(tgCucu_lat * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		       
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distanceTgCucu1[i] = dist;
+		       
+		    }
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    double theta =  Double.parseDouble(goodlon1[i]) - Double.parseDouble(goodlon[i]) ;  
+		    double dist = Math.sin(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distanceTgCucu2[i] = dist;
+		       
+		    }
+		   
+		    String minTgCucuCod = "";
+		    double minTgCucu = 0;
+		    double sortDistance []= new double[16];
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    sortDistance[i] = distanceTgCucu1[i] - distanceTgCucu2[i];
+		    }
+		   
+		   
+		    Arrays.sort(sortDistance);
+		   
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    if (sortDistance[i] > 0) {
+		    minTgCucu = sortDistance[i];
+		    break;
+		    }
+		    }
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    if (distanceTgCucu1[i] - distanceTgCucu2[i] == sortDistance[0] ) {
+		    minTgCucuCod = goodnames[i];
+		    }
+		    }
+		   
+		   
+		    coordonate.put(minTgCucuCod, minTgCucu);
+		   
+		   
+		    return coordonate;
+		}
+	
+		public static Map<String, Double> minCopouDistance(int lenghtFirstRequest, String[] goodlat, String goodlon[], String goodnames[],String[] goodlat1, String[] goodlon1, String[] goodnames1 ) {
+
+			Map<String, Double> coordonate = new HashMap<String, Double>();
+
+
+		     double copou_lat = 47.174618;
+		     double copou_lon = 27.57239;
+		   
+		   
+		     double distanceCopou1[] = new double[16];
+		     double distanceCopou2[] = new double[16];
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta = Double.parseDouble(goodlon[i]) - copou_lon;  
+		    	double dist = Math.sin(copou_lat * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(copou_lat * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		       
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distanceCopou1[i] = dist;
+		       
+		    }
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta =  Double.parseDouble(goodlon1[i]) - Double.parseDouble(goodlon[i]) ;  
+		    	double dist = Math.sin(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distanceCopou2[i] = dist;
+		       
+		    }
+		   
+		    String minCopouCod = "";
+		    double minCopou = 0;
+		    double sortDistance []= new double[16];
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	sortDistance[i] = distanceCopou1[i] - distanceCopou2[i];
+		    }
+		   
+		   
+		    Arrays.sort(sortDistance);
+		   
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (sortDistance[i] > 0) {
+		    		minCopou = sortDistance[i];
+		    	break;
+		    	}
+		    }
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (distanceCopou1[i] - distanceCopou2[i] == sortDistance[0] ) {
+		    		minCopouCod = goodnames[i];
+		    	}
+		    }
+		   
+		   
+		    coordonate.put(minCopouCod, minCopou);
+		   
+		   
+		    return coordonate;
+		}
+		
+		
+		public static Map<String, Double> minPalasDistance(int lenghtFirstRequest, String[] goodlat, String goodlon[], String goodnames[],String[] goodlat1, String[] goodlon1, String[] goodnames1 ) {
+
+			Map<String, Double> coordonate = new HashMap<String, Double>();
+
+
+		     double palas_lat = 47.159577;
+		     double palas_lon = 27.58785;
+		   
+		   
+		     double distancePalas1[] = new double[16];
+		     double distancePalas2[] = new double[16];
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta = Double.parseDouble(goodlon[i]) - palas_lon;  
+		    	double dist = Math.sin(palas_lat * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(palas_lat * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		       
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distancePalas1[i] = dist;
+		       
+		    }
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta =  Double.parseDouble(goodlon1[i]) - Double.parseDouble(goodlon[i]) ;  
+		    	double dist = Math.sin(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distancePalas2[i] = dist;
+		       
+		    }
+		   
+		    String minPalasCod = "";
+		    double minPalas = 0;
+		    double sortDistance []= new double[16];
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	sortDistance[i] = distancePalas1[i] - distancePalas2[i];
+		    }
+		   
+		   
+		    Arrays.sort(sortDistance);
+		   
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (sortDistance[i] > 0) {
+		    		minPalas = sortDistance[i];
+		    	break;
+		    	}
+		    }
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (distancePalas1[i] - distancePalas2[i] == sortDistance[0] ) {
+		    		minPalasCod = goodnames[i];
+		    	}
+		    }
+		   
+		   
+		    coordonate.put(minPalasCod, minPalas);
+		   
+		   
+		    return coordonate;
+		}
+		
+		public static Map<String, Double> minPUniriiDistance(int lenghtFirstRequest, String[] goodlat, String goodlon[], String goodnames[],String[] goodlat1, String[] goodlon1, String[] goodnames1 ) {
+
+			Map<String, Double> coordonate = new HashMap<String, Double>();
+
+
+		     double piataUnirii_lat = 47.165548;
+		     double piataUnirii_lon = 27.580871;
+		   
+		   
+		     double distancePUnirii1[] = new double[16];
+		     double distancePUnirii2[] = new double[16];
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta = Double.parseDouble(goodlon[i]) - piataUnirii_lon;  
+		    	double dist = Math.sin(piataUnirii_lat * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(piataUnirii_lat * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		       
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distancePUnirii1[i] = dist;
+		       
+		    }
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta =  Double.parseDouble(goodlon1[i]) - Double.parseDouble(goodlon[i]) ;  
+		    	double dist = Math.sin(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distancePUnirii2[i] = dist;
+		       
+		    }
+		   
+		    String minPUniriiCod = "";
+		    double minPUnirii = 0;
+		    double sortDistance []= new double[16];
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	sortDistance[i] = distancePUnirii1[i] - distancePUnirii2[i];
+		    }
+		   
+		   
+		    Arrays.sort(sortDistance);
+		   
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (sortDistance[i] > 0) {
+		    		minPUnirii = sortDistance[i];
+		    	break;
+		    	}
+		    }
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (distancePUnirii1[i] - distancePUnirii2[i] == sortDistance[0] ) {
+		    		minPUniriiCod = goodnames[i];
+		    	}
+		    }
+		   
+		   
+		    coordonate.put(minPUniriiCod, minPUnirii);
+		   
+		   
+		    return coordonate;
+		}
+	
+		
+		public static Map<String, Double> minGaraDistance(int lenghtFirstRequest, String[] goodlat, String goodlon[], String goodnames[],String[] goodlat1, String[] goodlon1, String[] goodnames1 ) {
+
+			Map<String, Double> coordonate = new HashMap<String, Double>();
+
+
+		     
+		     double gara_lat = 47.165906;
+			 double gara_lon = 27.571135;
+		     
+		   
+		   
+		     double distanceGara1[] = new double[16];
+		     double distanceGara2[] = new double[16];
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta = Double.parseDouble(goodlon[i]) - gara_lon;  
+		    	double dist = Math.sin(gara_lat * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(gara_lat * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		       
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distanceGara1[i] = dist;
+		       
+		    }
+		   
+		   
+		   
+		   
+		    for (int i = 0; i < lenghtFirstRequest; i++) {
+		    	double theta =  Double.parseDouble(goodlon1[i]) - Double.parseDouble(goodlon[i]) ;  
+		    	double dist = Math.sin(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.sin(Double.parseDouble(goodlat[i]) * Math.PI / 180.0) + Math.cos(Double.parseDouble(goodlat1[i]) * Math.PI / 180.0) * Math.cos( Double.parseDouble(goodlat[i]) * Math.PI / 180.0) * Math.cos(theta * Math.PI / 180.0);
+		        dist = Math.acos(dist);
+		        dist = dist * 180.0 / Math.PI;
+		        dist = dist * 60 * 1.1515 * 1.609344;
+		       
+		        distanceGara2[i] = dist;
+		       
+		    }
+		   
+		    String minGaraCod = "";
+		    double minGara = 0;
+		    double sortDistance []= new double[16];
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	sortDistance[i] = distanceGara1[i] - distanceGara2[i];
+		    }
+		   
+		   
+		    Arrays.sort(sortDistance);
+		   
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (sortDistance[i] > 0) {
+		    		minGara = sortDistance[i];
+		    	break;
+		    	}
+		    }
+		   
+		    for ( int i = 0; i < lenghtFirstRequest; i++) {
+		    	if (distanceGara1[i] - distanceGara2[i] == sortDistance[0] ) {
+		    		minGaraCod = goodnames[i];
+		    	}
+		    }
+		   
+		   
+		    coordonate.put(minGaraCod, minGara);
+		   
+		   
+		    return coordonate;
+		}
+}
+
+/**
+ * by: Mehdi Akbarian Rastaghi (@makbn)
+ */
+@Log4j2
+public class Leaflet extends Application {
+	
+	
+	
+	public class PESApr{
+
+		JFrame frmPesa;
+
+		/**
+		 * Launch the application.
+		 */
+		
+
+
+		/**
+		 * Create the application.
+		 */
+		public PESApr(){
+			initialize();
+		}
+
+		/**
+		 * Initialize the contents of the frame.
+		 */
+		private void initialize(){
+			//FRAME
+			frmPesa = new JFrame();
+			frmPesa.setTitle("PESA 2022");
+			frmPesa.setBounds(100, 100, 450, 600);
+			frmPesa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			/////
+			
+			// ZONA DE TEXT
+			JTextArea textArea = new JTextArea();
+			textArea.setLineWrap(true);
+			textArea.setFont(new Font("Yu Mincho Demibold", Font.BOLD, 18));
+			textArea.setEditable(false);
+			textArea.setBounds(61, 347, 319, 83);
+			frmPesa.getContentPane().add(textArea);
+			textArea.setVisible(false);
+			textArea.setBorder(new LineBorder(null, 2, true));
+			textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+			////////
+			
+			
+			
+			//Butoane statii
+			JButton btnTgCucu = new JButton("");
+			btnTgCucu.setBorderPainted(false);
+			btnTgCucu.setFocusPainted(false);
+			btnTgCucu.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					//textArea.setText("Tramvaiul vine in statie (/pleaca)");
+					System.out.println(Test_URL_Req.minTgCucu);
+					
+					for(Entry<String, Double> entry: Test_URL_Req.minTgCucu.entrySet()) {
+						textArea.setText(" Cod tramvai: "+entry.getKey()+"\n"+" La distanta de: "+(int)(entry.getValue()*1000)+"m");   
+				    }
+					
+				}
+			});
+			btnTgCucu.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnTgCucu.setBounds(121, 13, 188, 51);
+			btnTgCucu.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\tgCucu.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+			btnTgCucu.setContentAreaFilled(false);
+			frmPesa.getContentPane().add(btnTgCucu);
+			btnTgCucu.setVisible(false);
+			
+			JButton btnPoduRos = new JButton("Podu Ros");
+			btnPoduRos.setBorderPainted(false);
+			btnPoduRos.setFocusPainted(false);
+			btnPoduRos.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					System.out.println(Test_URL_Req.minPRos);
+					
+					for(Entry<String, Double> entry: Test_URL_Req.minPRos.entrySet()) {
+						textArea.setText(" Cod tramvai: "+entry.getKey()+"\n"+" La distanta de: "+(int)(entry.getValue()*1000)+"m");   
+				    }
+				}
+			});
+			btnPoduRos.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnPoduRos.setBounds(125, 69, 200, 51);
+			btnPoduRos.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\poduRos.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+			btnPoduRos.setContentAreaFilled(false);
+			frmPesa.getContentPane().add(btnPoduRos);
+			btnPoduRos.setVisible(false);
+			
+			JButton btnCopou = new JButton("Copou");
+			btnCopou.setFocusPainted(false);
+			btnCopou.setBorderPainted(false);
+			btnCopou.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					System.out.println(Test_URL_Req.minCopou);
+					
+					for(Entry<String, Double> entry: Test_URL_Req.minCopou.entrySet()) {
+						textArea.setText(" Cod tramvai: "+entry.getKey()+"\n"+" La distanta de: "+(int)(entry.getValue()*1000)+"m");   
+				    }
+				}
+			});
+			btnCopou.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnCopou.setBounds(125, 121, 200, 51);
+			btnCopou.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\copou.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+			btnCopou.setContentAreaFilled(false);
+			frmPesa.getContentPane().add(btnCopou);
+			btnCopou.setVisible(false);
+			
+			JButton btnPalas = new JButton("Palas");
+			btnPalas.setBorderPainted(false);
+			btnPalas.setFocusPainted(false);
+			btnPalas.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println(Test_URL_Req.minPalas);
+					
+					for(Entry<String, Double> entry: Test_URL_Req.minPalas.entrySet()) {
+						textArea.setText(" Cod tramvai: "+entry.getKey()+"\n"+" La distanta de: "+(int)(entry.getValue()*1000)+"m");   
+				    }
+				}
+			});
+			btnPalas.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnPalas.setBounds(125, 176, 200, 51);
+			btnPalas.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\palas.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+			btnPalas.setContentAreaFilled(false);
+			frmPesa.getContentPane().add(btnPalas);
+			btnPalas.setVisible(false);
+			
+			JButton btnPiataUnirii = new JButton("Piata Unirii");
+			btnPiataUnirii.setBorderPainted(false);
+			btnPiataUnirii.setFocusPainted(false);
+			btnPiataUnirii.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println(Test_URL_Req.minPUnirii);
+					
+					for(Entry<String, Double> entry: Test_URL_Req.minPUnirii.entrySet()) {
+						textArea.setText(" Cod tramvai: "+entry.getKey()+"\n"+" La distanta de: "+(int)(entry.getValue()*1000)+"m");   
+				    }
+				}
+			});
+			btnPiataUnirii.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnPiataUnirii.setBounds(125, 227, 200, 51);
+			btnPiataUnirii.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\piataUnirii.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+			btnPiataUnirii.setContentAreaFilled(false);
+			frmPesa.getContentPane().add(btnPiataUnirii);
+			btnPiataUnirii.setVisible(false);
+			
+			JButton btnGara = new JButton("Gara");
+			btnGara.setFocusPainted(false);
+			btnGara.setBorderPainted(false);
+			btnGara.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println(Test_URL_Req.minGara);
+					
+					for(Entry<String, Double> entry: Test_URL_Req.minGara.entrySet()) {
+						textArea.setText(" Cod tramvai: "+entry.getKey()+"\n"+" La distanta de: "+(int)(entry.getValue()*1000)+"m");   
+				    }
+				}
+			});
+			btnGara.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnGara.setBounds(124, 277, 200, 51);
+			btnGara.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\new\\gara.png")).getImage()).getScaledInstance(185, 42, java.awt.Image.SCALE_SMOOTH)));
+			btnGara.setContentAreaFilled(false);
+			frmPesa.getContentPane().add(btnGara);
+			btnGara.setVisible(false);
+			/////
+			
+			
+			//Buton harta
+			/*
+			JButton btnHarta = new JButton("HARTA");
+			btnHarta.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					//Leaflet.launch(args);
+					
+				}
+			});
+			
+			btnHarta.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnHarta.setBounds(106, 121, 222, 78);
+			frmPesa.getContentPane().add(btnHarta);
+			*/
+			
+			//Buton Zone de interes
+			JButton btnZoneDeInteres = new JButton("ZONE DE INTERES");
+			
+			
+			//Buton BACK
+			JButton btnBack = new JButton("");
+			btnBack.setFocusPainted(false);
+			btnBack.setVisible(false);
+			btnBack.setBorderPainted(false);
+			btnBack.setIcon(new ImageIcon(((new ImageIcon("D:\\PipPESA2022\\butoane\\btnBack.png")).getImage()).getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
+			btnBack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					btnZoneDeInteres.setVisible(true);
+					btnTgCucu.setVisible(false);
+					btnPoduRos.setVisible(false);
+					btnCopou.setVisible(false);
+					btnPalas.setVisible(false);
+					btnPiataUnirii.setVisible(false);
+					btnGara.setVisible(false);
+					btnBack.setVisible(false);
+					
+					textArea.setVisible(false);
+					textArea.setText("Verifica PESA");
+				}
+			});
+			btnBack.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnBack.setBounds(356, 443, 64, 68);
+			frmPesa.getContentPane().add(btnBack);
+			btnBack.setContentAreaFilled(false);
+			//////
+			
+			//Actiune buton ZONE DE INTERES
+			btnZoneDeInteres.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					btnZoneDeInteres.setVisible(false);
+					btnTgCucu.setVisible(true);
+					btnPoduRos.setVisible(true);
+					btnCopou.setVisible(true);
+					btnPalas.setVisible(true);
+					btnPiataUnirii.setVisible(true);
+					btnGara.setVisible(true);
+					btnBack.setVisible(true);
+					
+					textArea.setVisible(true);
+				}
+			});
+			btnZoneDeInteres.setFont(new Font("Yu Mincho Demibold", Font.PLAIN, 15));
+			btnZoneDeInteres.setBounds(106, 263, 222, 78);
+			frmPesa.getContentPane().add(btnZoneDeInteres);
+			//////
+
+			
+			//SETARE background FRAME
+			frmPesa.getContentPane().setLayout(null);
+			JLabel background;
+			ImageIcon backgroundFRAME = new ImageIcon ("D:\\PipPESA2022\\pessa.jpg");
+			background = new JLabel("", backgroundFRAME, JLabel.CENTER);
+			background.setBounds(0, 0, 432, 521);
+			frmPesa.getContentPane().add(background);	
+			
+
+
+			//Meniu BAR + Iteme
+			JMenuBar menuBar = new JMenuBar();
+			menuBar.setBorderPainted(false);
+			frmPesa.setJMenuBar(menuBar);
+			
+			JMenu menu = new JMenu("");
+			menu.setIcon(new ImageIcon(((new ImageIcon("D:/PipPESA2022/menubar.png")).getImage()).getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)));
+			menuBar.add(menu);
+			
+			JMenuItem mntmFaq = new JMenuItem("FAQ");
+			menu.add(mntmFaq);
+			
+			JMenuItem mntmOpenSource = new JMenuItem("Open source");
+			menu.add(mntmOpenSource);
+			
+			JMenuItem mntmHowItWorks = new JMenuItem("How it works");
+			menu.add(mntmHowItWorks);
+			
+			JMenu mnContact = new JMenu("Contact");
+			menu.add(mnContact);
+			
+			JMenuItem mntmDenisleonardmocanustudenttuiasiro = new JMenuItem("denis-leonard.mocanu@student.tuiasi.ro");
+			mnContact.add(mntmDenisleonardmocanustudenttuiasiro);
+			
+			JMenuItem mntmRazvansebastianbodescustudenttuiasiro = new JMenuItem("razvan-sebastian.bodescu@student.tuiasi.ro");
+			mnContact.add(mntmRazvansebastianbodescustudenttuiasiro);
+			
+			JMenuItem mntmPaulgheorghebreabanstudenttuiasiro = new JMenuItem("paul-gheorghe.breaban@student.tuiasi.ro");
+			mnContact.add(mntmPaulgheorghebreabanstudenttuiasiro);
+			
+			JMenuItem mntmAlexandrugabrielfilipstudenttuiasiro = new JMenuItem("alexandru-gabriel.filip@student.tuiasi.ro");
+			mnContact.add(mntmAlexandrugabrielfilipstudenttuiasiro);
+			
+			JMenuItem mntmAboutUs = new JMenuItem("About us");
+			menu.add(mntmAboutUs);
+			
+			JMenuItem mntmUpdate = new JMenuItem("Update");
+			menu.add(mntmUpdate);
+			
+
+		}
+	}
+
+
+	public static void main(String[] args){
+			//Leaflet.launch(args);
+			
+			
+			try {
+				Test_URL_Req t = new Test_URL_Req();
+				t.callMe();
+			} 
+			catch(Exception e){
+				System.out.println(e);
+			}
+		
+			Leaflet x = new Leaflet();
+			PESApr window =x.new PESApr();
+			window.frmPesa.setVisible(true);
+			
+			Leaflet.launch(args);
+			
+
+
+
+	}
+        private final String ACCESS_TOKEN = "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw";
+    @Override
+    public void start(Stage stage) {
+
+        //stage.initStyle(StageStyle.TRANSPARENT);
+        System.out.println("hi");
+        //building a new map view
+        final JLMapView map = JLMapView
+                .builder()
+                .mapType(JLProperties.MapType.LIGHT)
+                .accessToken(ACCESS_TOKEN)
+                .startCoordinate(JLLatLng.builder()
+                        .lat(43.54)
+                        .lng(22.54)
+                        .build())
+                .build();
+
+        //creating a window
+        //AnchorPane inside = createBasePane();
+        AnchorPane root = new AnchorPane(map);
+        root.setBackground(Background.EMPTY);
+        root.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
+        root.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
+        Scene scene = new Scene(root);
+
+        //adding map to window
+        //inside.getChildren().add(map);
+
+        stage.setMinHeight(JLProperties.INIT_MIN_HEIGHT_STAGE);
+        stage.setMinWidth(JLProperties.INIT_MIN_WIDTH_STAGE);
+        scene.setFill(Color.TRANSPARENT);
+        stage.setTitle("Java-Leaflet Test");
+        stage.setScene(scene);
+        stage.show();
+
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
+        stage.setY(100);
+
+        //set listener for map events
+        map.setMapListener(new OnJLMapViewListener() {
+            @Override
+            public void mapLoadedSuccessfully(JLMapView mapView) {
+                addMultiPolyline(map);
+               // addPolyline(map);
+               // addPolygon(map);
+
+                map.setView(JLLatLng.builder()
+                        .lng(10)
+                        .lat(10)
+                        .build());
+                
+                
+                
+                for(int i=0; i<16;i++){
+                	
+                	map.getUiLayer()
+                    .addMarker(JLLatLng.builder()
+                    		.lat( Double.parseDouble(Test_URL_Req.goodlat[i]))
+                    		.lng( Double.parseDouble(Test_URL_Req.goodlon[i]))
+                            .build(),null, true)
+                    .setOnActionListener(getListener());
+                	
+                }
+
+            		
+            }
+            @Override
+            public void mapFailed() {
+                log.error("map failed!");
+            }
+
+            @Override
+            public void onMove(Action action, JLLatLng center, JLBounds bounds, int zoomLevel) {
+                super.onMove(action, center, bounds, zoomLevel);
+
+                System.out.println("map on move: " + action + " c:" + center + " \t bounds:" + bounds + "\t z:" + zoomLevel);
+
+            }
+        });
+    }
+
+    private OnJLObjectActionListener<JLMarker> getListener() {
+        return new OnJLObjectActionListener<JLMarker>() {
+            @Override
+            public void click(JLMarker object, Action action) {
+                System.out.println("object click listener for marker:" + object);
+            }
+
+            @Override
+            public void move(JLMarker object, Action action) {
+                System.out.println("object move listener for marker:" + object);
+            }
+        };
+    }
+
+    private void addMultiPolyline(JLMapView map) {
+        JLLatLng[][] verticesT = new JLLatLng[2][];
+
+        verticesT[0] = new JLLatLng[]{
+                new JLLatLng(41.509, 20.08),
+                new JLLatLng(31.503, -10.06),
+                new JLLatLng(21.51, -0.047)
+        };
+
+        verticesT[1] = new JLLatLng[]{
+                new JLLatLng(51.509, 10.08),
+                new JLLatLng(55.503, 15.06),
+                new JLLatLng(42.51, 20.047)
+        };
+
+     
+    }
+
+   
+
+
+    private AnchorPane createBasePane() {
+        AnchorPane inside = new AnchorPane();
+        inside.setStyle("-fx-background-color: #555555");
+        AnchorPane.setLeftAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
+        AnchorPane.setRightAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
+        AnchorPane.setTopAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
+        AnchorPane.setBottomAnchor(inside, (double) JLProperties.NORMAL_MARGIN);
+
+        return inside;
+
+    }
+}

@@ -1,0 +1,45 @@
+package io.github.makbn.jlmap;
+
+import static org.junit.Assert.*;
+
+import javax.swing.JButton;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.sun.javafx.font.CompositeGlyphMapper;
+
+public class LeafletTest {
+	
+	Leaflet l=new Leaflet();
+	
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+	
+	
+	@Test 
+	public void testAudioFile(){
+		
+		String soundName =  "buzzer.wav";
+		
+		l.playSound(soundName);
+	}
+
+	@Test
+	public void testApasareButon(){
+		JButton b1=new JButton("Press");
+		assertFalse(l.PressBut(b1));
+		
+	}
+}
